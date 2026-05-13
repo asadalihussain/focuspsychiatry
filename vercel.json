@@ -4,17 +4,17 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/uncategorized/appearance-guide",
+      "source": "/uncategorized/appearance-guide/",
       "destination": "/services/suboxone/",
       "permanent": true
     },
     {
-      "source": "/uncategorized/perfectly-on-furniture",
+      "source": "/uncategorized/perfectly-on-furniture/",
       "destination": "/conditions/addiction/",
       "permanent": true
     },
     {
-      "source": "/uncategorized/fat-son-how-smiling-natural",
+      "source": "/uncategorized/fat-son-how-smiling-natural/",
       "destination": "/new-patients/",
       "permanent": true
     },
@@ -29,7 +29,7 @@
       "permanent": true
     },
     {
-      "source": "/feed",
+      "source": "/feed/",
       "destination": "/blog/",
       "permanent": true
     },
@@ -39,7 +39,7 @@
       "permanent": true
     },
     {
-      "source": "/wp-admin",
+      "source": "/wp-admin/",
       "destination": "/",
       "permanent": true
     },
