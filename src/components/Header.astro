@@ -1,0 +1,67 @@
+---
+import { site, navigation } from "../data/site.ts";
+const pathname = Astro.url.pathname;
+---
+
+<header class="bg-cream/95 backdrop-blur sticky top-0 z-50 border-b border-sage-100">
+  <div class="container-prose flex items-center justify-between py-3">
+    <a href="/" class="flex items-center gap-3" aria-label={`${site.name} home`}>
+      <img src="/logo.webp" alt={site.name} class="h-10 w-auto" width="120" height="48" />
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-7" aria-label="Primary">
+      {navigation.primary.map((item) => {
+        const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            class:list={[
+              "text-sm font-medium transition-colors",
+              active ? "text-sage-800" : "text-sage-700 hover:text-sage-900",
+            ]}
+            aria-current={active ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={`tel:${site.contact.phoneRaw}`}
+        class="hidden sm:inline-flex text-sm font-medium text-sage-800 hover:text-sage-900"
+      >
+        {site.contact.phone}
+      </a>
+      <a href="/contact/" class="btn-primary text-sm">Book Appointment</a>
+      <button id="mobile-menu-toggle" class="lg:hidden p-2 text-sage-800" aria-label="Open menu" aria-expanded="false">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden lg:hidden border-t border-sage-100 bg-cream">
+    <nav class="container-prose py-4 flex flex-col gap-3" aria-label="Mobile">
+      {navigation.primary.map((item) => (
+        <a href={item.href} class="text-base font-medium text-sage-800 py-1">
+          {item.label}
+        </a>
+      ))}
+      <a href={`tel:${site.contact.phoneRaw}`} class="text-base font-medium text-sage-700 py-1">
+        Call {site.contact.phone}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("mobile-menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  toggle?.addEventListener("click", () => {
+    const open = menu?.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+</script>

@@ -1,0 +1,61 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/PageHero.astro";
+import CTASection from "../components/CTASection.astro";
+import { site } from "../data/site.ts";
+---
+
+<Layout
+  title="Insurance & Payment"
+  description="Focus Psychiatry accepts Aetna, Cigna, and select Blue Cross Blue Shield plans. Call 281-968-7568 to verify coverage for your specific plan."
+>
+  <PageHero
+    eyebrow="Insurance & Payment"
+    title="Accepted insurance plans"
+    subtitle="A summary of plans currently accepted at Focus Psychiatry. Call us to verify your specific coverage."
+  />
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose grid lg:grid-cols-3 gap-10">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="grid sm:grid-cols-2 gap-5">
+          {site.insurance.map((ins) => (
+            <div class="bg-white rounded-xl p-6 border border-sage-100">
+              <h3 class="text-lg text-sage-900">{ins.carrier}</h3>
+              <ul class="mt-3 space-y-1 text-sm text-sage-700">
+                {ins.plans.map((p) => (
+                  <li>· {p}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div class="bg-sage-50 rounded-xl p-7 border border-sage-100 mt-8">
+          <h2 class="text-xl text-sage-900">Verifying your coverage</h2>
+          <p class="mt-3 text-sage-800 leading-relaxed">
+            Insurance acceptance changes from time to time, and coverage details vary by plan. The fastest way to confirm whether your specific plan is in-network — and what your copay or out-of-pocket cost will look like — is to call us directly at <a href={`tel:${site.contact.phoneRaw}`} class="text-sage-900 font-semibold underline">{site.contact.phone}</a>.
+          </p>
+          <p class="mt-3 text-sage-800 leading-relaxed">
+            We can also discuss self-pay options if your plan isn't listed.
+          </p>
+        </div>
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-xl p-6 border border-sage-100 sticky top-24">
+          <h3 class="text-lg text-sage-900">Quick verification</h3>
+          <p class="mt-2 text-sage-700 text-sm">Have your insurance card ready when you call. We'll need:</p>
+          <ul class="mt-3 space-y-1 text-sm text-sage-700">
+            <li>· Member ID</li>
+            <li>· Group / plan number</li>
+            <li>· Carrier name</li>
+          </ul>
+          <a href={`tel:${site.contact.phoneRaw}`} class="btn-primary w-full mt-6 justify-center">Call {site.contact.phone}</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+</Layout>

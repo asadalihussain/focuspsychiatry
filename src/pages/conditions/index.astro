@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CTASection from "../../components/CTASection.astro";
+import IconLeaf from "../../components/IconLeaf.astro";
+import { getCollection } from "astro:content";
+
+const conditions = (await getCollection("conditions"))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout
+  title="Conditions Treated"
+  description="Focus Psychiatry treats depression, anxiety, bipolar disorder, ADHD, OCD, sleep disorders, schizophrenia, and addiction for adolescents and adults in Alvin, TX."
+>
+  <PageHero
+    eyebrow="Conditions"
+    title="Conditions we treat"
+    subtitle="Mental health care for adolescents and adults — across the full range of common psychiatric conditions."
+  />
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {conditions.map((c) => (
+        <a
+          href={`/conditions/${c.id}/`}
+          class="group block bg-white rounded-xl p-6 border border-sage-100 hover:border-sage-300 hover:shadow-lg transition-all"
+        >
+          <div class="w-10 h-10 rounded-lg bg-sage-100 text-sage-700 flex items-center justify-center mb-4 group-hover:bg-sage-200 transition-colors">
+            <IconLeaf name={c.data.icon ?? "leaf"} class="w-5 h-5" />
+          </div>
+          <h2 class="text-lg text-sage-900">{c.data.title}</h2>
+          <p class="mt-2 text-sm text-sage-700 leading-relaxed">{c.data.excerpt}</p>
+          <p class="mt-4 text-sm font-medium text-sage-700 group-hover:text-sage-900">Read more &rarr;</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CTASection />
+</Layout>

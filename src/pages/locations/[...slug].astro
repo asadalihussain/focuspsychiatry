@@ -1,0 +1,145 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CTASection from "../../components/CTASection.astro";
+import IconLeaf from "../../components/IconLeaf.astro";
+import { getCollection, render } from "astro:content";
+import { site } from "../../data/site.ts";
+
+export async function getStaticPaths() {
+  const cities = await getCollection("cities");
+  return cities.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const isHome = entry.data.distanceMiles === 0;
+const city = entry.data.name;
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": ["MedicalBusiness", "LocalBusiness"],
+  name: `${site.name} — Serving ${city}, ${entry.data.state}`,
+  image: new URL("/logo.webp", site.url).toString(),
+  url: new URL(`/locations/${entry.data.slug}/`, site.url).toString(),
+  telephone: site.contact.phone,
+  faxNumber: site.contact.fax,
+  priceRange: "$$",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.contact.address1,
+    addressLocality: site.contact.city,
+    addressRegion: site.contact.region,
+    postalCode: site.contact.postal,
+    addressCountry: site.contact.country,
+  },
+  areaServed: {
+    "@type": "City",
+    name: city,
+    containedInPlace: { "@type": "AdministrativeArea", name: entry.data.state },
+  },
+  openingHoursSpecification: site.contact.hours.map((h) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: h.day,
+    opens: h.open,
+    closes: h.close,
+  })),
+};
+
+const allConditions = (await getCollection("conditions"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+---
+
+<Layout
+  title={entry.data.seoTitle ?? `Psychiatrist Serving ${city}, ${entry.data.state} | ${site.name}`}
+  description={entry.data.seoDescription ?? `Focus Psychiatry serves ${city}, ${entry.data.state} from our Alvin office. ${entry.data.distanceMiles} miles, ${entry.data.drivingMinutes} minute drive.`}
+  schema={localBusinessSchema}
+>
+  <section class="bg-gradient-to-b from-sage-50 to-cream border-b border-sage-100">
+    <div class="container-prose py-16 md:py-24 max-w-4xl">
+      <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">{entry.data.county ?? "Texas"}</p>
+      <h1 class="mt-3 text-4xl md:text-5xl lg:text-6xl text-sage-900 leading-tight">
+        {isHome ? `Psychiatrist in ${city}, ${entry.data.state}` : `Psychiatrist serving ${city}, ${entry.data.state}`}
+      </h1>
+      <p class="mt-5 text-lg md:text-xl text-sage-700 max-w-2xl leading-relaxed">
+        {isHome
+          ? `${site.name} has been ${city}'s independent psychiatric practice since ${site.established}.`
+          : `Focus Psychiatry sees ${city} patients from our Alvin office — about ${entry.data.distanceMiles} miles and ${entry.data.drivingMinutes} minutes away.`}
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3">
+        <a href="/contact/" class="btn-primary">Book an Appointment</a>
+        <a href={`tel:${site.contact.phoneRaw}`} class="btn-secondary">
+          Call {site.contact.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-14 md:py-20">
+    <div class="container-prose grid lg:grid-cols-3 gap-10">
+      <div class="lg:col-span-2 space-y-6">
+        <article class="text-sage-800 leading-relaxed text-lg [&_h2]:text-2xl [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-sage-900 [&_h3]:text-xl [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-sage-900 [&_p]:mb-5">
+          <Content />
+        </article>
+
+        <div class="bg-sage-50 rounded-xl p-7 border border-sage-100 mt-10">
+          <h2 class="text-2xl text-sage-900">What we treat for {city} patients</h2>
+          <p class="mt-3 text-sage-700">Focus Psychiatry sees patients ages {site.agesServed} for the full range of common psychiatric conditions:</p>
+          <ul class="mt-5 grid sm:grid-cols-2 gap-3">
+            {allConditions.map((c) => (
+              <li>
+                <a href={`/conditions/${c.id}/`} class="flex items-center gap-3 text-sage-800 hover:text-sage-900">
+                  <IconLeaf name={c.data.icon ?? "leaf"} class="w-4 h-4 text-sage-600" />
+                  <span>{c.data.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-xl p-6 border border-sage-100 sticky top-24">
+          <h3 class="text-lg text-sage-900">Visit our Alvin office</h3>
+          <address class="not-italic mt-4 text-sm text-sage-700 leading-relaxed">
+            {site.contact.address1}<br />
+            {site.contact.city}, {site.contact.region} {site.contact.postal}
+          </address>
+          <dl class="mt-5 pt-5 border-t border-sage-100 space-y-3 text-sm">
+            <div>
+              <dt class="text-sage-600">Phone</dt>
+              <dd><a href={`tel:${site.contact.phoneRaw}`} class="text-sage-900 font-medium">{site.contact.phone}</a></dd>
+            </div>
+            <div>
+              <dt class="text-sage-600">Hours</dt>
+              <dd class="text-sage-900">Mon–Fri 8:30 AM – 5:00 PM</dd>
+            </div>
+            {!isHome && (
+              <>
+                <div>
+                  <dt class="text-sage-600">From {city}</dt>
+                  <dd class="text-sage-900">{entry.data.distanceMiles} miles · {entry.data.drivingMinutes} min</dd>
+                </div>
+                {entry.data.nearbyLandmarks.length > 0 && (
+                  <div>
+                    <dt class="text-sage-600">Familiar routes</dt>
+                    <dd class="text-sage-900">{entry.data.nearbyLandmarks.join(", ")}</dd>
+                  </div>
+                )}
+              </>
+            )}
+          </dl>
+          <a href="/contact/" class="btn-primary w-full mt-6 justify-center">Schedule</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection
+    heading={`Serving ${city} and the surrounding area`}
+    subheading={`Focus Psychiatry accepts new patients ages ${site.agesServed}. Telepsychiatry available throughout Texas.`}
+  />
+</Layout>

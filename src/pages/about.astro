@@ -1,0 +1,146 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CTASection from "../components/CTASection.astro";
+import IconLeaf from "../components/IconLeaf.astro";
+import { site } from "../data/site.ts";
+---
+
+<Layout
+  title={`About ${site.doctor.shortName}`}
+  description={`${site.doctor.name} is a psychiatrist serving Alvin, TX and the surrounding South Houston area since ${site.established}.`}
+>
+  <section class="bg-gradient-to-b from-sage-50 to-cream border-b border-sage-100">
+    <div class="container-prose py-16 md:py-24 grid lg:grid-cols-12 gap-10 items-center">
+      <div class="lg:col-span-7 order-2 lg:order-1">
+        <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">About the practice</p>
+        <h1 class="mt-3 text-4xl md:text-5xl lg:text-6xl text-sage-900 leading-tight">
+          Meet {site.doctor.name}
+        </h1>
+        <p class="mt-5 text-lg md:text-xl text-sage-700 max-w-xl leading-relaxed">
+          Psychiatrist in Alvin, TX since {site.established}. Treating ages {site.agesServed}, in-person and by telepsychiatry across Texas.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/contact/" class="btn-primary">Schedule a visit</a>
+          <a href={`tel:${site.contact.phoneRaw}`} class="btn-secondary">
+            Call {site.contact.phone}
+          </a>
+        </div>
+      </div>
+      <div class="lg:col-span-5 order-1 lg:order-2">
+        <div class="relative max-w-md mx-auto">
+          <div class="absolute -inset-6 rounded-full bg-sage-200/50 blur-3xl"></div>
+          <img
+            src="/dr-zaidi.png"
+            alt={site.doctor.name}
+            class="relative w-full aspect-square rounded-full object-cover ring-1 ring-sage-200 shadow-xl"
+            width="1000"
+            height="1000"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose grid lg:grid-cols-3 gap-12">
+      <article class="lg:col-span-2 space-y-6 text-lg text-sage-800 leading-relaxed">
+        <p>{site.doctor.bio}</p>
+        <p>{site.doctor.training}</p>
+
+        <h2 class="text-2xl pt-4">What guides the practice</h2>
+        <p>
+          Mental health care should feel steady, individual, and confidential. Focus Psychiatry is intentionally a small practice — every patient is seen and known by Dr. Zaidi personally. That continuity is part of the treatment.
+        </p>
+        <p>
+          We treat addiction with the same dignity as any other medical condition. The practice is judgment-free, and the goal is sustainable recovery — not a one-week detox that doesn't address the underlying cause.
+        </p>
+
+        <h2 class="text-2xl pt-4">Education & training</h2>
+        <ul class="space-y-4 not-prose">
+          <li class="border-l-2 border-sage-300 pl-4">
+            <p class="font-medium text-sage-900">University of Texas Health Science Center at Houston</p>
+            <p class="text-sm text-sage-700">Residency, Psychiatry · 2010–2011</p>
+          </li>
+          <li class="border-l-2 border-sage-300 pl-4">
+            <p class="font-medium text-sage-900">Texas Tech University Health Sciences Center, Lubbock</p>
+            <p class="text-sm text-sage-700">Residency, Psychiatry · 2007–2010 · Resident of the Month, University Medical Center</p>
+          </li>
+          <li class="border-l-2 border-sage-300 pl-4">
+            <p class="font-medium text-sage-900">Dow University of Health Sciences</p>
+            <p class="text-sm text-sage-700">Doctor of Medicine · Class of 2000</p>
+          </li>
+        </ul>
+
+        <h2 class="text-2xl pt-4">Licensure & certifications</h2>
+        <ul class="space-y-3 not-prose">
+          <li class="flex items-start gap-3">
+            <IconLeaf name="shield" class="w-5 h-5 mt-0.5 text-sage-600 shrink-0" />
+            <div>
+              <p class="font-medium text-sage-900">Texas State Medical License</p>
+              <p class="text-sm text-sage-700">Active · since 2011</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <IconLeaf name="shield" class="w-5 h-5 mt-0.5 text-sage-600 shrink-0" />
+            <div>
+              <p class="font-medium text-sage-900">DEA / Buprenorphine Certification</p>
+              <p class="text-sm text-sage-700">Certified to perform outpatient narcotics detoxification and maintenance treatment using buprenorphine (Suboxone®)</p>
+            </div>
+          </li>
+        </ul>
+
+        <h2 class="text-2xl pt-4">Memberships & languages</h2>
+        <div class="grid sm:grid-cols-2 gap-5 not-prose">
+          <div class="bg-sage-50 rounded-lg p-5 border border-sage-100">
+            <p class="text-sage-600 text-xs uppercase tracking-wider font-medium">Professional membership</p>
+            <p class="mt-2 font-medium text-sage-900">Texas Medical Association (TMA)</p>
+            <p class="text-sm text-sage-700">Member</p>
+          </div>
+          <div class="bg-sage-50 rounded-lg p-5 border border-sage-100">
+            <p class="text-sage-600 text-xs uppercase tracking-wider font-medium">Languages spoken</p>
+            <p class="mt-2 font-medium text-sage-900">English, Urdu, Hindi</p>
+          </div>
+        </div>
+      </article>
+
+      <aside class="lg:col-span-1">
+        <div class="bg-sage-50 rounded-2xl p-7 border border-sage-100 sticky top-24">
+          <h3 class="text-sage-900 text-lg">Quick facts</h3>
+          <dl class="mt-5 space-y-3 text-sm">
+            <div class="flex items-start gap-3">
+              <IconLeaf name="clock" class="w-4 h-4 mt-0.5 text-sage-600 shrink-0" />
+              <div>
+                <dt class="text-sage-600">Practicing since</dt>
+                <dd class="text-sage-900 font-medium">{site.established}</dd>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <IconLeaf name="users" class="w-4 h-4 mt-0.5 text-sage-600 shrink-0" />
+              <div>
+                <dt class="text-sage-600">Ages</dt>
+                <dd class="text-sage-900 font-medium">{site.agesServed}</dd>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <IconLeaf name="heart" class="w-4 h-4 mt-0.5 text-sage-600 shrink-0" />
+              <div>
+                <dt class="text-sage-600">Accepting new patients</dt>
+                <dd class="text-sage-900 font-medium">Yes</dd>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <IconLeaf name="pulse" class="w-4 h-4 mt-0.5 text-sage-600 shrink-0" />
+              <div>
+                <dt class="text-sage-600">Telepsychiatry</dt>
+                <dd class="text-sage-900 font-medium">Available in Texas</dd>
+              </div>
+            </div>
+          </dl>
+          <a href="/contact/" class="btn-primary w-full mt-6 justify-center">Schedule a visit</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection variant="cream" heading="Have a question before you book?" subheading="Reach out — we'll respond within one business day." />
+</Layout>

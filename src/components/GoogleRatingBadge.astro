@@ -1,0 +1,79 @@
+---
+import { googleRating } from "../data/reviews.ts";
+interface Props {
+  variant?: "compact" | "stacked";
+  class?: string;
+}
+const { variant = "compact", class: extra = "" } = Astro.props;
+
+const full = Math.floor(googleRating.average);
+const hasHalf = googleRating.average - full >= 0.25 && googleRating.average - full < 0.75;
+const totalStars = 5;
+---
+
+{variant === "compact" ? (
+  <a
+    href="/reviews/"
+    class:list={["group inline-flex items-center gap-3 text-sm", extra]}
+    aria-label={`${googleRating.average} star rating from ${googleRating.count} Google reviews`}
+  >
+    <div class="flex items-center gap-0.5 text-amber-500" aria-hidden="true">
+      {Array.from({ length: totalStars }).map((_, i) => {
+        const filled = i < full;
+        const half = !filled && i === full && hasHalf;
+        return (
+          <svg viewBox="0 0 24 24" class="w-4 h-4">
+            <defs>
+              <linearGradient id={`half-${i}`}>
+                <stop offset="50%" stop-color="currentColor" />
+                <stop offset="50%" stop-color="#e2e8f0" />
+              </linearGradient>
+            </defs>
+            <path
+              fill={filled ? "currentColor" : half ? `url(#half-${i})` : "#e2e8f0"}
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"
+            />
+          </svg>
+        );
+      })}
+    </div>
+    <span class="text-sage-900 font-semibold">{googleRating.average}</span>
+    <span class="text-sage-700">·</span>
+    <span class="text-sage-700 group-hover:text-sage-900">
+      {googleRating.count} Google reviews
+    </span>
+  </a>
+) : (
+  <a
+    href="/reviews/"
+    class:list={["group inline-flex flex-col items-start gap-2", extra]}
+    aria-label={`${googleRating.average} star rating from ${googleRating.count} Google reviews`}
+  >
+    <div class="flex items-center gap-2">
+      <span class="text-3xl text-sage-900 font-semibold">{googleRating.average}</span>
+      <div class="flex items-center gap-0.5 text-amber-500" aria-hidden="true">
+        {Array.from({ length: totalStars }).map((_, i) => {
+          const filled = i < full;
+          const half = !filled && i === full && hasHalf;
+          return (
+            <svg viewBox="0 0 24 24" class="w-5 h-5">
+              <defs>
+                <linearGradient id={`half-stk-${i}`}>
+                  <stop offset="50%" stop-color="currentColor" />
+                  <stop offset="50%" stop-color="#e2e8f0" />
+                </linearGradient>
+              </defs>
+              <path
+                fill={filled ? "currentColor" : half ? `url(#half-stk-${i})` : "#e2e8f0"}
+                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"
+              />
+            </svg>
+          );
+        })}
+      </div>
+    </div>
+    <span class="text-sm text-sage-700 group-hover:text-sage-900">
+      Based on {googleRating.count} Google reviews — read them all &rarr;
+    </span>
+  </a>
+)}

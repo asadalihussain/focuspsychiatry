@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CTASection from "../../components/CTASection.astro";
+import IconLeaf from "../../components/IconLeaf.astro";
+import { getCollection } from "astro:content";
+
+const services = (await getCollection("services"))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout
+  title="Psychiatric Services in Alvin, TX"
+  description="Medication management, telepsychiatry, Suboxone treatment, TMS, and Spravato for treatment-resistant depression — all from Focus Psychiatry in Alvin, TX."
+>
+  <PageHero
+    eyebrow="Services"
+    title="What we offer"
+    subtitle="From everyday medication management to advanced options for treatment-resistant cases."
+  />
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose grid md:grid-cols-2 gap-6">
+      {services.map((s) => (
+        <a
+          href={`/services/${s.id}/`}
+          class="group block bg-white rounded-xl p-8 border border-sage-100 hover:border-sage-300 hover:shadow-lg transition-all"
+        >
+          <div class="w-12 h-12 rounded-lg bg-sage-700 text-white flex items-center justify-center mb-6">
+            <IconLeaf name={s.data.icon ?? "leaf"} />
+          </div>
+          <h2 class="text-2xl text-sage-900">{s.data.title}</h2>
+          <p class="mt-3 text-sage-700 leading-relaxed">{s.data.excerpt}</p>
+          <p class="mt-6 text-sm font-medium text-sage-700 group-hover:text-sage-900">Learn more &rarr;</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CTASection />
+</Layout>

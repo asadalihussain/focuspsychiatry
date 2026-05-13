@@ -1,0 +1,77 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CTASection from "../components/CTASection.astro";
+import GoogleRatingBadge from "../components/GoogleRatingBadge.astro";
+import ReviewCard from "../components/ReviewCard.astro";
+import { site } from "../data/site.ts";
+import { reviews, googleRating } from "../data/reviews.ts";
+
+const aggregateSchema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalBusiness",
+  name: site.name,
+  url: new URL("/", site.url).toString(),
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: googleRating.average,
+    reviewCount: googleRating.count,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  review: reviews.slice(0, 12).map((r) => ({
+    "@type": "Review",
+    author: { "@type": "Person", name: r.author },
+    reviewRating: { "@type": "Rating", ratingValue: 5, bestRating: 5 },
+    reviewBody: r.body,
+  })),
+};
+---
+
+<Layout
+  title="Patient Reviews"
+  description={`Read what patients say about Dr. Syed Zaidi at Focus Psychiatry in Alvin, TX. ${googleRating.average} stars across ${googleRating.count} Google reviews.`}
+  schema={aggregateSchema}
+>
+  <section class="bg-gradient-to-b from-sage-50 to-cream border-b border-sage-100">
+    <div class="container-prose py-16 md:py-20 max-w-4xl">
+      <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Patient Reviews</p>
+      <h1 class="mt-3 text-4xl md:text-5xl lg:text-6xl text-sage-900 leading-tight">
+        What patients say about Dr. Zaidi
+      </h1>
+      <p class="mt-5 text-lg md:text-xl text-sage-700 max-w-2xl leading-relaxed">
+        Honest, unedited reviews from patients and families — pulled directly from our Google Business profile.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+        <GoogleRatingBadge variant="stacked" />
+        <a
+          href={googleRating.shareUrl}
+          target="_blank"
+          rel="noopener nofollow"
+          class="btn-secondary text-sm"
+        >
+          Leave a Google review
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {reviews.map((r) => (
+          <ReviewCard review={r} />
+        ))}
+      </div>
+
+      <p class="text-center text-sm text-sage-600 mt-12 max-w-2xl mx-auto">
+        Reviews shown are from verified Google reviewers. Some short or duplicate entries are not displayed. To see every review — including the most recent — visit our
+        <a href={googleRating.shareUrl} target="_blank" rel="noopener nofollow" class="text-sage-800 underline hover:text-sage-900">Google Business profile</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to schedule your first visit?"
+    subheading="Focus Psychiatry is accepting new patients ages 14 and up."
+  />
+</Layout>

@@ -1,0 +1,51 @@
+---
+import { site, navigation } from "../data/site.ts";
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-sage-800 text-sage-100 mt-24">
+  <div class="container-prose py-14 grid gap-10 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-3 mb-4">
+        <img src="/logo.webp" alt={site.name} class="h-12 w-auto bg-white rounded p-1" width="120" height="48" />
+      </div>
+      <p class="text-sage-200 text-sm max-w-md leading-relaxed">
+        {site.description}
+      </p>
+      <p class="text-sage-300 text-xs mt-4">
+        If you are having a mental health crisis, please call <a href="tel:988" class="underline">988</a> or go to your nearest emergency room.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-sage-50 font-semibold text-sm uppercase tracking-wide mb-4">Visit</h3>
+      <address class="not-italic text-sm text-sage-200 leading-relaxed">
+        {site.contact.address1}<br />
+        {site.contact.city}, {site.contact.region} {site.contact.postal}<br />
+        <a href={`tel:${site.contact.phoneRaw}`} class="hover:text-white">{site.contact.phone}</a><br />
+        Fax {site.contact.fax}
+      </address>
+      <div class="mt-4 text-sm text-sage-200">
+        <p class="font-medium text-sage-100">Hours</p>
+        <p>Mon–Fri 8:30 AM – 5:00 PM</p>
+        <p class="text-sage-300">Closed Sat & Sun</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-sage-50 font-semibold text-sm uppercase tracking-wide mb-4">Explore</h3>
+      <ul class="space-y-2 text-sm">
+        {navigation.primary.map((item) => (
+          <li><a href={item.href} class="text-sage-200 hover:text-white">{item.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-sage-700">
+    <div class="container-prose py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-sage-300">
+      <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+      <p>Treating ages {site.agesServed}. Telepsychiatry available throughout Texas.</p>
+    </div>
+  </div>
+</footer>

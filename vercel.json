@@ -1,0 +1,52 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/uncategorized/appearance-guide",
+      "destination": "/services/suboxone/",
+      "permanent": true
+    },
+    {
+      "source": "/uncategorized/perfectly-on-furniture",
+      "destination": "/conditions/addiction/",
+      "permanent": true
+    },
+    {
+      "source": "/uncategorized/fat-son-how-smiling-natural",
+      "destination": "/new-patients/",
+      "permanent": true
+    },
+    {
+      "source": "/uncategorized/:path*",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/category/:path*",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/feed",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/feed/:path*",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-admin",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-login.php",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}

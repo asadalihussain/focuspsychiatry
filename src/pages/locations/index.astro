@@ -1,0 +1,127 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CTASection from "../../components/CTASection.astro";
+import IconLeaf from "../../components/IconLeaf.astro";
+import { getCollection } from "astro:content";
+import { site } from "../../data/site.ts";
+
+const cities = (await getCollection("cities"))
+  .sort((a, b) => a.data.distanceMiles - b.data.distanceMiles);
+
+const nearby = cities.filter((c) => c.data.distanceMiles > 0);
+
+const mapQuery = encodeURIComponent(
+  `${site.contact.address1}, ${site.contact.city}, ${site.contact.region} ${site.contact.postal}`
+);
+const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`;
+---
+
+<Layout
+  title="Service Area & Locations"
+  description="Focus Psychiatry is located in Alvin, TX and serves patients across Pearland, Manvel, Friendswood, League City, Santa Fe, Iowa Colony, and Rosharon — plus telepsychiatry across Texas."
+>
+  <PageHero
+    eyebrow="Locations"
+    title="Where we serve"
+    subtitle="In-person care from our Alvin office, plus secure telepsychiatry for patients anywhere in Texas."
+  />
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose grid lg:grid-cols-5 gap-10">
+      <div class="lg:col-span-2 space-y-6">
+        <div>
+          <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Our Office</p>
+          <h2 class="mt-2 text-3xl text-sage-900">Focus Psychiatry</h2>
+          <address class="not-italic mt-4 text-lg text-sage-800 leading-relaxed">
+            {site.contact.address1}<br />
+            {site.contact.city}, {site.contact.region} {site.contact.postal}
+          </address>
+        </div>
+
+        <dl class="space-y-4 pt-4 border-t border-sage-100">
+          <div class="flex items-start gap-3">
+            <IconLeaf name="pulse" class="w-5 h-5 mt-0.5 text-sage-600 shrink-0" />
+            <div>
+              <dt class="text-sage-600 text-sm">Phone</dt>
+              <dd>
+                <a href={`tel:${site.contact.phoneRaw}`} class="text-sage-900 font-medium text-lg hover:underline">
+                  {site.contact.phone}
+                </a>
+              </dd>
+              <p class="text-xs text-sage-600 mt-1">Fax {site.contact.fax}</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <IconLeaf name="clock" class="w-5 h-5 mt-0.5 text-sage-600 shrink-0" />
+            <div>
+              <dt class="text-sage-600 text-sm">Hours</dt>
+              <dd class="text-sage-900 font-medium">Mon–Fri · 8:30 AM – 5:00 PM</dd>
+              <p class="text-sm text-sage-700">Closed Saturday & Sunday</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <IconLeaf name="users" class="w-5 h-5 mt-0.5 text-sage-600 shrink-0" />
+            <div>
+              <dt class="text-sage-600 text-sm">Telepsychiatry</dt>
+              <dd class="text-sage-900 font-medium">Available throughout Texas</dd>
+            </div>
+          </div>
+        </dl>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <a href={directionsUrl} target="_blank" rel="noopener" class="btn-primary">Get Directions</a>
+          <a href="/contact/" class="btn-secondary">Book an Appointment</a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3">
+        <div class="rounded-2xl overflow-hidden border border-sage-100 shadow-sm h-full min-h-[360px]">
+          <iframe
+            title={`Map to ${site.name}`}
+            src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+            width="100%"
+            height="100%"
+            style="border:0; min-height: 420px;"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-sage-50 border-t border-sage-100">
+    <div class="container-prose">
+      <div class="max-w-2xl mb-10">
+        <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Nearby Communities</p>
+        <h2 class="mt-3 text-3xl md:text-4xl text-sage-900">Cities we serve from our Alvin office</h2>
+        <p class="mt-4 text-sage-700">
+          Many of our patients come from the surrounding South Houston metro. Click your city for directions, drive times, and telepsychiatry options.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {nearby.map((c) => (
+          <a
+            href={`/locations/${c.data.slug}/`}
+            class="group block bg-white rounded-xl p-6 border border-sage-100 hover:border-sage-300 hover:shadow-lg transition-all"
+          >
+            <h3 class="text-lg text-sage-900">{c.data.name}, {c.data.state}</h3>
+            {c.data.county && (
+              <p class="mt-1 text-xs text-sage-600 uppercase tracking-wider">{c.data.county}</p>
+            )}
+            <p class="mt-3 text-sm text-sage-700">
+              {c.data.distanceMiles} miles · {c.data.drivingMinutes} min drive
+            </p>
+            <p class="mt-4 text-sm font-medium text-sage-700 group-hover:text-sage-900">Details &rarr;</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+</Layout>

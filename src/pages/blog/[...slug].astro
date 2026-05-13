@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CTASection from "../../components/CTASection.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("posts")).filter((p) => !p.data.draft);
+  return posts.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Layout
+  title={entry.data.seoTitle ?? entry.data.title}
+  description={entry.data.seoDescription ?? entry.data.excerpt}
+>
+  <section class="bg-gradient-to-b from-sage-50 to-cream border-b border-sage-100">
+    <div class="container-prose py-14 md:py-20 max-w-3xl">
+      <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">
+        {entry.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} · {entry.data.author}
+      </p>
+      <h1 class="mt-3 text-4xl md:text-5xl text-sage-900 leading-tight">{entry.data.title}</h1>
+      <p class="mt-5 text-lg text-sage-700">{entry.data.excerpt}</p>
+    </div>
+  </section>
+
+  <article class="py-16">
+    <div class="container-prose max-w-3xl">
+      <div class="text-sage-800 leading-relaxed text-lg [&_h2]:text-2xl [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:text-sage-900 [&_h3]:text-xl [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-sage-900 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-5 [&_li]:mb-1">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  <CTASection />
+</Layout>

@@ -1,0 +1,96 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/PageHero.astro";
+import CTASection from "../components/CTASection.astro";
+import IconLeaf from "../components/IconLeaf.astro";
+import { site } from "../data/site.ts";
+---
+
+<Layout
+  title="New Patients"
+  description="What to expect at your first Focus Psychiatry appointment in Alvin, TX. Availability, confidentiality, and how to prepare."
+>
+  <PageHero
+    eyebrow="New Patients"
+    title="What to expect"
+    subtitle="A small, independent practice with same-week availability, individualized attention, and a strict commitment to confidentiality."
+  />
+
+  <section class="py-16 md:py-20">
+    <div class="container-prose grid lg:grid-cols-3 gap-10">
+      <div class="lg:col-span-2 space-y-10">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-10 h-10 rounded-lg bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+              <IconLeaf name="clock" class="w-5 h-5" />
+            </span>
+            <h2 class="text-2xl text-sage-900">Availability</h2>
+          </div>
+          <p class="text-sage-800 leading-relaxed">
+            Our office is open five days a week for treatment. We offer flexible scheduling so patients can get the care they need exactly when they need it — most new-patient appointments can be scheduled within the same week.
+          </p>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-10 h-10 rounded-lg bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+              <IconLeaf name="users" class="w-5 h-5" />
+            </span>
+            <h2 class="text-2xl text-sage-900">Individualized attention</h2>
+          </div>
+          <p class="text-sage-800 leading-relaxed">
+            Each patient who walks through our doors is personally evaluated by Dr. Zaidi to determine the best course of treatment. Same-day clinical decisions, with a deeper doctor-patient relationship than you'll find at larger practices.
+          </p>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-10 h-10 rounded-lg bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+              <IconLeaf name="shield" class="w-5 h-5" />
+            </span>
+            <h2 class="text-2xl text-sage-900">Respect & confidentiality</h2>
+          </div>
+          <p class="text-sage-800 leading-relaxed">
+            Our program is completely confidential. From the moment you arrive, you'll be treated with respect. We recognize that mental health and addiction are health conditions, and Dr. Zaidi is committed to helping you regain control of your life through medical and psychological treatment together.
+          </p>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-10 h-10 rounded-lg bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+              <IconLeaf name="heart" class="w-5 h-5" />
+            </span>
+            <h2 class="text-2xl text-sage-900">No judgments</h2>
+          </div>
+          <p class="text-sage-800 leading-relaxed">
+            Our practice is built on compassion and recovery. We are devoted to the wellness of every patient who walks through our doors — regardless of what brought you here.
+          </p>
+        </div>
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="bg-sage-50 rounded-2xl p-7 border border-sage-100 sticky top-24">
+          <h3 class="text-lg text-sage-900">Before your first visit</h3>
+          <ul class="mt-4 space-y-3 text-sm text-sage-800">
+            <li class="flex items-start gap-2"><span class="text-sage-600">1.</span> Download and complete the new patient packet</li>
+            <li class="flex items-start gap-2"><span class="text-sage-600">2.</span> Verify insurance coverage if applicable</li>
+            <li class="flex items-start gap-2"><span class="text-sage-600">3.</span> Gather a list of current medications</li>
+            <li class="flex items-start gap-2"><span class="text-sage-600">4.</span> Note any past psychiatric records or prescribers</li>
+          </ul>
+
+          <a href="/files/new-patient-packet.pdf" class="btn-secondary w-full mt-6 justify-center">
+            Download New Patient Packet
+          </a>
+          <p class="text-xs text-sage-600 mt-2 text-center">Replace this file via the CMS once provided.</p>
+
+          <a href="/contact/" class="btn-primary w-full mt-3 justify-center">Schedule Now</a>
+          <a href={`tel:${site.contact.phoneRaw}`} class="block text-center mt-3 text-sm text-sage-700 hover:text-sage-900">
+            or call {site.contact.phone}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CTASection />
+</Layout>

@@ -1,0 +1,17 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site.ts";
+---
+
+<Layout title="Message received" description="Thanks for reaching out to Focus Psychiatry.">
+  <section class="py-24 md:py-32">
+    <div class="container-prose text-center max-w-xl">
+      <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Confirmation</p>
+      <h1 class="mt-3 text-4xl md:text-5xl text-sage-900">We received your message</h1>
+      <p class="mt-5 text-sage-700 text-lg">A member of the practice will respond within one business day. For urgent needs, please call {site.contact.phone}.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/" class="btn-primary">Back to home</a>
+      </div>
+    </div>
+  </section>
+</Layout>

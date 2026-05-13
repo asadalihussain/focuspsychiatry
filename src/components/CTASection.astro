@@ -1,0 +1,35 @@
+---
+import { site } from "../data/site.ts";
+interface Props {
+  heading?: string;
+  subheading?: string;
+  variant?: "sage" | "cream";
+}
+const {
+  heading = "Ready to take the next step?",
+  subheading = "Focus Psychiatry is accepting new patients ages 14 and up. In-person visits in Alvin, TX or secure telepsychiatry across Texas.",
+  variant = "sage",
+} = Astro.props;
+
+const bg = variant === "sage" ? "bg-sage-700 text-sage-50" : "bg-sage-100 text-sage-900";
+const subColor = variant === "sage" ? "text-sage-100" : "text-sage-800";
+---
+
+<section class={`${bg}`}>
+  <div class="container-prose py-16 md:py-20 text-center">
+    <h2 class:list={[variant === "sage" ? "text-sage-50" : "text-sage-900", "text-3xl md:text-4xl mb-4"]}>
+      {heading}
+    </h2>
+    <p class={`${subColor} max-w-2xl mx-auto text-lg`}>
+      {subheading}
+    </p>
+    <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+      <a href={`tel:${site.contact.phoneRaw}`} class={variant === "sage" ? "btn-primary bg-cream text-sage-800 hover:bg-white" : "btn-primary"}>
+        Call {site.contact.phone}
+      </a>
+      <a href="/contact/" class={variant === "sage" ? "btn-secondary border-sage-100 text-sage-50 hover:bg-sage-800" : "btn-secondary"}>
+        Send a Message
+      </a>
+    </div>
+  </div>
+</section>

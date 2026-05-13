@@ -1,0 +1,85 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Toggle to "git-gateway" with Netlify Identity for free auth,
+# or use "github" for direct GitHub OAuth.
+
+publish_mode: editorial_workflow
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+site_url: https://www.focuspsychiatry.com
+display_url: https://www.focuspsychiatry.com
+logo_url: https://www.focuspsychiatry.com/logo.webp
+
+collections:
+  - name: "conditions"
+    label: "Conditions"
+    label_singular: "Condition"
+    folder: "src/content/conditions"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Short Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Sort Order", name: "order", widget: "number", default: 99, value_type: "int" }
+      - { label: "Icon", name: "icon", widget: "select", default: "leaf",
+          options: ["leaf","brain","heart","shield","clock","sun","pulse","moon","spark","users"] }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "services"
+    label: "Services"
+    label_singular: "Service"
+    folder: "src/content/services"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Short Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Sort Order", name: "order", widget: "number", default: 99, value_type: "int" }
+      - { label: "Icon", name: "icon", widget: "select", default: "leaf",
+          options: ["leaf","brain","heart","shield","clock","sun","pulse","moon","spark","users"] }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "cities"
+    label: "Locations / Cities"
+    label_singular: "City"
+    folder: "src/content/cities"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string", hint: "e.g. league-city (matches the URL)" }
+      - { label: "State", name: "state", widget: "string", default: "TX" }
+      - { label: "County", name: "county", widget: "string", required: false }
+      - { label: "Distance (miles)", name: "distanceMiles", widget: "number", value_type: "int", default: 0 }
+      - { label: "Driving Time (minutes)", name: "drivingMinutes", widget: "number", value_type: "int", default: 0 }
+      - { label: "Nearby Landmarks", name: "nearbyLandmarks", widget: "list", required: false }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "posts"
+    label: "Blog Posts"
+    label_singular: "Post"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Short Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Published At", name: "publishedAt", widget: "datetime" }
+      - { label: "Author", name: "author", widget: "string", default: "Dr. Syed Sajjad Zaidi" }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
