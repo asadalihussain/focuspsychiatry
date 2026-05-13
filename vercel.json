@@ -19,22 +19,17 @@
       "permanent": true
     },
     {
-      "source": "/uncategorized/:path*",
+      "source": "/uncategorized/",
       "destination": "/blog/",
       "permanent": true
     },
     {
-      "source": "/category/:path*",
+      "source": "/category/uncategorized/",
       "destination": "/blog/",
       "permanent": true
     },
     {
       "source": "/feed/",
-      "destination": "/blog/",
-      "permanent": true
-    },
-    {
-      "source": "/feed/:path*",
       "destination": "/blog/",
       "permanent": true
     },
