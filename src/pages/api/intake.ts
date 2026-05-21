@@ -9,15 +9,6 @@ const MAX_PER_FILE = 3 * 1024 * 1024;
 const MAX_TOTAL = 10 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
-const KIND_LABELS: Record<string, string> = {
-  copy: "Copy / text update",
-  design: "Design / layout / colors",
-  "new-content": "Add new content",
-  image: "Image / photo update",
-  bug: "Bug",
-  other: "Other",
-};
-
 function sanitizeFilename(name: string): string {
   return (
     name
@@ -53,10 +44,14 @@ async function githubFetch(token: string, path: string, init: RequestInit = {}) 
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const token = (import.meta as any).env?.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  const token =
+    (import.meta as any).env?.INTAKE_GITHUB_TOKEN ||
+    process.env.INTAKE_GITHUB_TOKEN ||
+    (import.meta as any).env?.GITHUB_TOKEN ||
+    process.env.GITHUB_TOKEN;
   if (!token) {
     return new Response(
-      JSON.stringify({ error: "Server is missing GITHUB_TOKEN configuration." }),
+      JSON.stringify({ error: "Server is missing INTAKE_GITHUB_TOKEN configuration." }),
       { status: 500, headers: { "content-type": "application/json" } }
     );
   }
@@ -80,15 +75,12 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const url = ((form.get("url") as string) || "").trim();
-  const kind = ((form.get("kind") as string) || "other").trim();
-  const title = ((form.get("title") as string) || "").trim().slice(0, 120);
+  const urlLabel = ((form.get("urlLabel") as string) || "").trim().slice(0, 200);
   const details = ((form.get("details") as string) || "").trim();
-  const submitterName = ((form.get("name") as string) || "").trim().slice(0, 120);
-  const submitterEmail = ((form.get("email") as string) || "").trim().slice(0, 200);
 
-  if (!url || !title || !details) {
+  if (!url || !details || details === "<div><br></div>" || details === "<p><br></p>") {
     return new Response(
-      JSON.stringify({ error: "Page, summary, and description are required." }),
+      JSON.stringify({ error: "Please pick a page and describe the change." }),
       { status: 400, headers: { "content-type": "application/json" } }
     );
   }
@@ -132,12 +124,6 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
-  const kindLabel = KIND_LABELS[kind] ?? "Other";
-  const submitter =
-    submitterName || submitterEmail
-      ? `**Submitter:** ${[submitterName, submitterEmail].filter(Boolean).join(" — ")}`
-      : "**Submitter:** anonymous";
-
   const attachmentsMd = uploadedLinks.length
     ? uploadedLinks
         .map((l) =>
@@ -148,14 +134,16 @@ export const POST: APIRoute = async ({ request }) => {
         .join("\n")
     : "_No attachments._";
 
+  const pageLine = urlLabel
+    ? `**Page / area:** ${urlLabel} (\`${url}\`)`
+    : `**Page / area:** \`${url}\``;
+
   const body = [
-    `**Page / area:** \`${url}\``,
-    `**Type:** ${kindLabel}`,
-    submitter,
+    pageLine,
     "",
     "---",
     "",
-    "### Description",
+    "### Requested change",
     details,
     "",
     "### Attachments",
@@ -165,15 +153,17 @@ export const POST: APIRoute = async ({ request }) => {
     `_Submitted via /intake on ${new Date().toISOString()}_`,
   ].join("\n");
 
+  const issueTitle = `[Change Request] ${urlLabel || url}`.slice(0, 250);
+
   let issueData: { html_url: string; number: number };
   try {
     const issueRes = await githubFetch(token, `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        title: `[Change Request] ${title}`,
+        title: issueTitle,
         body,
-        labels: ["change-request", kind].filter((x) => x !== "other"),
+        labels: ["change-request"],
       }),
     });
     issueData = (await issueRes.json()) as { html_url: string; number: number };

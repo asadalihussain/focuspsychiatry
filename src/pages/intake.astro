@@ -42,13 +42,10 @@ const urlGroups = [
     ],
   },
   {
-    label: "Global / other",
+    label: "Global",
     items: [
       { value: "global:header", label: "Site header / navigation" },
       { value: "global:footer", label: "Site footer" },
-      { value: "global:design", label: "Site-wide design / colors / typography" },
-      { value: "global:new-page", label: "New page (describe in notes)" },
-      { value: "global:other", label: "Other (describe in notes)" },
     ],
   },
 ];
@@ -64,9 +61,6 @@ const urlGroups = [
     <div class="container-prose py-12 md:py-16 max-w-3xl">
       <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Internal</p>
       <h1 class="mt-3 text-3xl md:text-4xl text-sage-900 leading-tight">Submit a change request</h1>
-      <p class="mt-3 text-sage-700">
-        Use this form to request changes to copy, images, or design. Each submission creates a tracked ticket and we'll follow up within one business day.
-      </p>
     </div>
   </section>
 
@@ -98,37 +92,6 @@ const urlGroups = [
         </div>
 
         <div>
-          <label for="kind" class="block text-sm font-medium text-sage-900">Type of change</label>
-          <select
-            id="kind"
-            name="kind"
-            class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
-          >
-            <option value="copy">Copy / text update</option>
-            <option value="design">Design / layout / colors</option>
-            <option value="new-content">Add new content (service, condition, page, etc.)</option>
-            <option value="image">Image / photo update</option>
-            <option value="bug">Something is broken</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="title" class="block text-sm font-medium text-sage-900">
-            Short summary <span class="text-red-600">*</span>
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            required
-            maxlength="120"
-            placeholder="e.g. Update Suboxone page intro paragraph"
-            class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
-          />
-        </div>
-
-        <div>
           <label for="details" class="block text-sm font-medium text-sage-900">
             Describe the change <span class="text-red-600">*</span>
           </label>
@@ -156,29 +119,6 @@ const urlGroups = [
             class="mt-2 block w-full text-sm text-sage-700 file:mr-3 file:rounded-md file:border-0 file:bg-sage-100 file:px-4 file:py-2 file:text-sage-800 file:font-medium hover:file:bg-sage-200"
           />
           <ul id="attachment-list" class="mt-3 space-y-1 text-sm text-sage-700"></ul>
-        </div>
-
-        <div class="grid sm:grid-cols-2 gap-5">
-          <div>
-            <label for="name" class="block text-sm font-medium text-sage-900">Your name</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              autocomplete="name"
-              class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
-            />
-          </div>
-          <div>
-            <label for="email" class="block text-sm font-medium text-sage-900">Your email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
-            />
-          </div>
         </div>
 
         <div class="flex items-center gap-4 pt-2">
@@ -252,22 +192,21 @@ const urlGroups = [
 
         if (form.elements.company?.value) return; // honeypot
 
-        const url = form.elements.url.value;
-        const title = form.elements.title.value.trim();
+        const urlSelect = form.elements.url;
+        const url = urlSelect.value;
         const details = form.elements.details.value.trim();
-        if (!url || !title || !details || details === "<div><br></div>") {
-          statusEl.textContent = "Please fill in the page, summary, and description.";
+        if (!url || !details || details === "<div><br></div>") {
+          statusEl.textContent = "Please pick a page and describe the change.";
           statusEl.className = "text-sm text-red-700";
           return;
         }
 
+        const urlLabel = urlSelect.options[urlSelect.selectedIndex]?.text || url;
+
         const fd = new FormData();
         fd.append("url", url);
-        fd.append("kind", form.elements.kind.value);
-        fd.append("title", title);
+        fd.append("urlLabel", urlLabel);
         fd.append("details", details);
-        fd.append("name", form.elements.name.value);
-        fd.append("email", form.elements.email.value);
 
         let totalSize = 0;
         const files = Array.from(attachInput.files || []).slice(0, MAX_FILES);
