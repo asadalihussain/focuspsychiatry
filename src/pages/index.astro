@@ -4,8 +4,9 @@ import CTASection from "../components/CTASection.astro";
 import IconLeaf from "../components/IconLeaf.astro";
 import GoogleRatingBadge from "../components/GoogleRatingBadge.astro";
 import ReviewCard from "../components/ReviewCard.astro";
+import ProviderPortrait from "../components/ProviderPortrait.astro";
 import { getCollection } from "astro:content";
-import { site } from "../data/site.ts";
+import { site, providers } from "../data/site.ts";
 import { featuredReviews, googleRating } from "../data/reviews.ts";
 
 const conditions = (await getCollection("conditions"))
@@ -163,26 +164,31 @@ const localBusinessSchema = {
   </section>
 
   <section class="py-20 md:py-24">
-    <div class="container-prose grid lg:grid-cols-12 gap-10 items-start">
-      <div class="lg:col-span-5">
-        <div class="relative w-full max-w-xs mx-auto lg:mx-0">
-          <div class="absolute -inset-3 rounded-full bg-sage-200/40 blur-2xl"></div>
-          <img
-            src="/dr-zaidi.png"
-            alt={site.doctor.name}
-            class="relative w-full aspect-square rounded-full object-cover ring-1 ring-sage-200 shadow-lg"
-            width="1000"
-            height="1000"
-          />
-        </div>
-        <p class="mt-8 text-sage-600 font-medium uppercase tracking-wider text-xs">About</p>
-        <h2 class="mt-3 text-3xl md:text-4xl text-sage-900">{site.doctor.name}</h2>
-        <p class="mt-4 text-sage-700">Psychiatrist · Alvin, TX · Practicing since {site.established}</p>
-        <a href="/about/" class="mt-6 btn-secondary">Read full bio</a>
+    <div class="container-prose">
+      <div class="max-w-2xl mb-12">
+        <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Meet your providers</p>
+        <h2 class="mt-3 text-3xl md:text-4xl text-sage-900">
+          Compassionate, individualized care from a small team you'll know personally.
+        </h2>
       </div>
-      <div class="lg:col-span-7 space-y-5 text-sage-800 leading-relaxed lg:pt-2">
-        <p>{site.doctor.bio}</p>
-        <p>{site.doctor.training}</p>
+
+      <div class="grid md:grid-cols-2 gap-10 lg:gap-14">
+        {providers.map((provider) => (
+          <article class="flex flex-col">
+            <div class="mb-6">
+              <ProviderPortrait provider={provider} size="sm" class="lg:mx-0" />
+            </div>
+            <p class="text-warm-gold text-xs uppercase tracking-wider font-medium">{provider.role}</p>
+            <h3 class="mt-2 text-2xl text-sage-900">{provider.name}</h3>
+            <p class="mt-2 text-sm text-sage-700">
+              Practicing since {provider.practicingSince} · Speaks {provider.languages.join(", ")}
+            </p>
+            <p class="mt-5 text-sage-800 leading-relaxed flex-1">{provider.bio}</p>
+            <a href={`/our-team/#${provider.id}`} class="mt-6 text-sage-700 hover:text-sage-900 font-medium text-sm self-start">
+              Read full profile &rarr;
+            </a>
+          </article>
+        ))}
       </div>
     </div>
   </section>

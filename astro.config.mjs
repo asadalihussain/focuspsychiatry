@@ -13,6 +13,8 @@ export default defineConfig({
     '/uncategorized':                             '/blog/',
     '/category/uncategorized':                    '/blog/',
     '/feed':                                      '/blog/',
+    '/about':                                     '/our-team/',
+    '/providers':                                 '/our-team/',
   },
   vite: {
     plugins: [tailwindcss()],
