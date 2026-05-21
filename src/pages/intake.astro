@@ -1,0 +1,327 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+// Build the URL dropdown from collections + hardcoded routes.
+const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+const conditions = (await getCollection("conditions")).sort((a, b) => a.data.order - b.data.order);
+const cities = (await getCollection("cities")).sort((a, b) => a.data.distanceMiles - b.data.distanceMiles);
+
+const urlGroups = [
+  {
+    label: "Top-level pages",
+    items: [
+      { value: "/", label: "Home" },
+      { value: "/our-team/", label: "Our Team" },
+      { value: "/new-patients/", label: "New Patients" },
+      { value: "/insurance/", label: "Insurance" },
+      { value: "/reviews/", label: "Reviews" },
+      { value: "/contact/", label: "Contact" },
+      { value: "/blog/", label: "Blog index" },
+    ],
+  },
+  {
+    label: "Services",
+    items: [
+      { value: "/services/", label: "Services index" },
+      ...services.map((s) => ({ value: `/services/${s.id}/`, label: s.data.title })),
+    ],
+  },
+  {
+    label: "Conditions",
+    items: [
+      { value: "/conditions/", label: "Conditions index" },
+      ...conditions.map((c) => ({ value: `/conditions/${c.id}/`, label: c.data.title })),
+    ],
+  },
+  {
+    label: "Locations",
+    items: [
+      { value: "/locations/", label: "Locations index" },
+      ...cities.map((c) => ({ value: `/locations/${c.data.slug}/`, label: `${c.data.name}, ${c.data.state}` })),
+    ],
+  },
+  {
+    label: "Global / other",
+    items: [
+      { value: "global:header", label: "Site header / navigation" },
+      { value: "global:footer", label: "Site footer" },
+      { value: "global:design", label: "Site-wide design / colors / typography" },
+      { value: "global:new-page", label: "New page (describe in notes)" },
+      { value: "global:other", label: "Other (describe in notes)" },
+    ],
+  },
+];
+---
+
+<Layout
+  title="Change Request"
+  description="Submit a request to update content or design on the Focus Psychiatry website."
+>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trix@2.1.15/dist/trix.css" />
+
+  <section class="bg-gradient-to-b from-sage-50 to-cream border-b border-sage-100">
+    <div class="container-prose py-12 md:py-16 max-w-3xl">
+      <p class="text-sage-600 font-medium uppercase tracking-wider text-xs">Internal</p>
+      <h1 class="mt-3 text-3xl md:text-4xl text-sage-900 leading-tight">Submit a change request</h1>
+      <p class="mt-3 text-sage-700">
+        Use this form to request changes to copy, images, or design. Each submission creates a tracked ticket and we'll follow up within one business day.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-10 md:py-14">
+    <div class="container-prose max-w-3xl">
+      <form id="intake-form" class="space-y-7" novalidate>
+        <!-- Honeypot -->
+        <input type="text" name="company" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+        <div>
+          <label for="url" class="block text-sm font-medium text-sage-900">
+            Which page or area? <span class="text-red-600">*</span>
+          </label>
+          <select
+            id="url"
+            name="url"
+            required
+            class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
+          >
+            <option value="">— Select a page —</option>
+            {urlGroups.map((g) => (
+              <optgroup label={g.label}>
+                {g.items.map((it) => (
+                  <option value={it.value}>{it.label}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label for="kind" class="block text-sm font-medium text-sage-900">Type of change</label>
+          <select
+            id="kind"
+            name="kind"
+            class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
+          >
+            <option value="copy">Copy / text update</option>
+            <option value="design">Design / layout / colors</option>
+            <option value="new-content">Add new content (service, condition, page, etc.)</option>
+            <option value="image">Image / photo update</option>
+            <option value="bug">Something is broken</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="title" class="block text-sm font-medium text-sage-900">
+            Short summary <span class="text-red-600">*</span>
+          </label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            required
+            maxlength="120"
+            placeholder="e.g. Update Suboxone page intro paragraph"
+            class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
+          />
+        </div>
+
+        <div>
+          <label for="details" class="block text-sm font-medium text-sage-900">
+            Describe the change <span class="text-red-600">*</span>
+          </label>
+          <p class="mt-1 text-xs text-sage-600">
+            Use the toolbar to format text — bold, lists, links, headings. Add screenshots in the attachments section below.
+          </p>
+          <input id="details" type="hidden" name="details" required />
+          <trix-toolbar id="trix-toolbar"></trix-toolbar>
+          <trix-editor
+            input="details"
+            toolbar="trix-toolbar"
+            class="mt-2 block min-h-[180px] rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
+          ></trix-editor>
+        </div>
+
+        <div>
+          <label for="attachments" class="block text-sm font-medium text-sage-900">Screenshots / images</label>
+          <p class="mt-1 text-xs text-sage-600">Optional. Up to 5 files, 3 MB each, total ≤ 10 MB. JPG, PNG, GIF, WebP.</p>
+          <input
+            id="attachments"
+            name="attachments"
+            type="file"
+            accept="image/png,image/jpeg,image/gif,image/webp"
+            multiple
+            class="mt-2 block w-full text-sm text-sage-700 file:mr-3 file:rounded-md file:border-0 file:bg-sage-100 file:px-4 file:py-2 file:text-sage-800 file:font-medium hover:file:bg-sage-200"
+          />
+          <ul id="attachment-list" class="mt-3 space-y-1 text-sm text-sage-700"></ul>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label for="name" class="block text-sm font-medium text-sage-900">Your name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
+            />
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-sage-900">Your email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              class="mt-2 block w-full rounded-md border border-sage-200 bg-white px-3 py-2.5 focus:border-sage-500 focus:ring-2 focus:ring-sage-200 outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 pt-2">
+          <button type="submit" id="submit-btn" class="btn-primary">
+            <span id="submit-label">Submit request</span>
+            <span id="submit-spinner" class="hidden" aria-hidden="true">…</span>
+          </button>
+          <p id="form-status" role="status" class="text-sm text-sage-700"></p>
+        </div>
+      </form>
+
+      <div id="success-state" class="hidden mt-6 rounded-xl border border-sage-200 bg-white p-8 text-center">
+        <div class="w-12 h-12 rounded-full bg-sage-100 text-sage-700 flex items-center justify-center mx-auto mb-4">
+          <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+        </div>
+        <h2 class="text-2xl text-sage-900">Request submitted</h2>
+        <p class="mt-2 text-sage-700">Thanks — we got it. You'll hear back within one business day.</p>
+        <p class="mt-1 text-xs text-sage-600" id="success-ref"></p>
+        <button type="button" id="new-request" class="btn-secondary mt-6">Submit another request</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/trix@2.1.15/dist/trix.umd.min.js" defer></script>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("intake-form");
+      const submitBtn = document.getElementById("submit-btn");
+      const submitLabel = document.getElementById("submit-label");
+      const submitSpinner = document.getElementById("submit-spinner");
+      const statusEl = document.getElementById("form-status");
+      const successState = document.getElementById("success-state");
+      const successRef = document.getElementById("success-ref");
+      const newRequestBtn = document.getElementById("new-request");
+      const attachInput = document.getElementById("attachments");
+      const attachList = document.getElementById("attachment-list");
+
+      const MAX_FILES = 5;
+      const MAX_PER_FILE = 3 * 1024 * 1024;
+      const MAX_TOTAL = 10 * 1024 * 1024;
+
+      // Disable Trix's own file-attach (separate file input handles attachments)
+      addEventListener("trix-file-accept", (e) => e.preventDefault());
+
+      attachInput?.addEventListener("change", () => {
+        attachList.innerHTML = "";
+        const files = Array.from(attachInput.files || []);
+        if (files.length > MAX_FILES) {
+          statusEl.textContent = `Only the first ${MAX_FILES} files will be uploaded.`;
+          statusEl.className = "text-sm text-amber-700";
+        } else {
+          statusEl.textContent = "";
+        }
+        files.slice(0, MAX_FILES).forEach((f) => {
+          const li = document.createElement("li");
+          const sizeKb = (f.size / 1024).toFixed(0);
+          li.textContent = `• ${f.name} (${sizeKb} KB)`;
+          if (f.size > MAX_PER_FILE) {
+            li.textContent += " — too large, will be skipped";
+            li.className = "text-amber-700";
+          }
+          attachList.appendChild(li);
+        });
+      });
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusEl.textContent = "";
+        statusEl.className = "text-sm text-sage-700";
+
+        if (form.elements.company?.value) return; // honeypot
+
+        const url = form.elements.url.value;
+        const title = form.elements.title.value.trim();
+        const details = form.elements.details.value.trim();
+        if (!url || !title || !details || details === "<div><br></div>") {
+          statusEl.textContent = "Please fill in the page, summary, and description.";
+          statusEl.className = "text-sm text-red-700";
+          return;
+        }
+
+        const fd = new FormData();
+        fd.append("url", url);
+        fd.append("kind", form.elements.kind.value);
+        fd.append("title", title);
+        fd.append("details", details);
+        fd.append("name", form.elements.name.value);
+        fd.append("email", form.elements.email.value);
+
+        let totalSize = 0;
+        const files = Array.from(attachInput.files || []).slice(0, MAX_FILES);
+        for (const f of files) {
+          if (f.size > MAX_PER_FILE) continue;
+          totalSize += f.size;
+          if (totalSize > MAX_TOTAL) break;
+          fd.append("attachments", f);
+        }
+
+        submitBtn.disabled = true;
+        submitLabel.classList.add("hidden");
+        submitSpinner.classList.remove("hidden");
+        statusEl.textContent = "Submitting…";
+
+        try {
+          const res = await fetch("/api/intake", { method: "POST", body: fd });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+
+          form.classList.add("hidden");
+          successState.classList.remove("hidden");
+          if (data.issueUrl) {
+            successRef.innerHTML = `Reference: <a class="underline" href="${data.issueUrl}" target="_blank" rel="noopener">${data.issueRef || "ticket"}</a>`;
+          }
+        } catch (err) {
+          statusEl.textContent = "Something went wrong: " + (err.message || "please try again");
+          statusEl.className = "text-sm text-red-700";
+        } finally {
+          submitBtn.disabled = false;
+          submitLabel.classList.remove("hidden");
+          submitSpinner.classList.add("hidden");
+        }
+      });
+
+      newRequestBtn?.addEventListener("click", () => {
+        form?.reset();
+        attachList.innerHTML = "";
+        const trixEditor = document.querySelector("trix-editor");
+        if (trixEditor && trixEditor.editor) trixEditor.editor.loadHTML("");
+        form.classList.remove("hidden");
+        successState.classList.add("hidden");
+        statusEl.textContent = "";
+      });
+    });
+  </script>
+
+  <style is:global>
+    trix-editor:focus { outline: none; }
+    trix-toolbar .trix-button-group {
+      border-color: var(--color-sage-200);
+      background-color: white;
+    }
+    trix-toolbar .trix-button { border-color: var(--color-sage-200); }
+    trix-editor h1 { font-size: 1.5rem; line-height: 1.3; }
+  </style>
+</Layout>
